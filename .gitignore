@@ -1,4 +1,6 @@
-/.venv/
-/.env
-*.pyc
+.venv/
 __pycache__/
+.idea/
+__pycharm__/
+.env
+*.pyc
