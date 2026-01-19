@@ -1,5 +1,5 @@
 from app.extensions import db
-from passlib.hash import bcrypt
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(db.Model):
     __tablename__ = "app_user"
@@ -11,7 +11,7 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
 
     def set_password(self, raw_password: str):
-        self.password = bcrypt.hash(raw_password)
+        self.password = generate_password_hash(raw_password)
 
-    def check_password(self, raw_password: str) -> bool:
-        return bcrypt.verify(raw_password, self.password)
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
