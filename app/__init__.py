@@ -3,6 +3,7 @@ from flask import Flask
 from app.extensions import db, jwt
 from app.errors import error_handler
 from app.routes.auth import auth_bp
+from app.routes.products import products_bp
 
 def create_app():
     app = Flask(__name__)
@@ -12,7 +13,10 @@ def create_app():
     jwt.init_app(app)
     error_handler(app)
 
-    app.register_blueprint(auth_bp, url_prefix="/auth")
+    with app.app_context():
+        db.create_all()
 
+    app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(products_bp, url_prefix="/api")
 
     return app

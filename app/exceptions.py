@@ -3,3 +3,9 @@ class UserExistsError(Exception):
 
 class InvalidCredentialsError(Exception):
     pass
+
+class ProductNotFoundError(Exception):
+    pass
+
+class ProductExistsError(Exception):
+    pass

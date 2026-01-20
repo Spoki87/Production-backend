@@ -1,24 +1,21 @@
-from datetime import timedelta
-
 from flask import current_app
+from flask_jwt_extended import create_access_token
+
 from app.exceptions import UserExistsError, InvalidCredentialsError
 from app.models.app_user import User
 from app.extensions import db
-from flask_jwt_extended import create_access_token, config
+
+from app.schemas.auth import UserRegisterDTO, UserLoginDTO
 
 
 class AuthService:
     @staticmethod
-    def register_user(first_name, last_name, email, password):
-        if User.query.filter_by(email=email).first():
-            raise UserExistsError("User already exists")
+    def register_user(user_register_dto:UserRegisterDTO):
+        if User.query.filter_by(email=user_register_dto.email).first():
+            raise UserExistsError("User with this email already exists")
 
-        user = User(
-            first_name=first_name,
-            last_name=last_name,
-            email=email
-        )
-        user.set_password(password)
+        user = User(**user_register_dto.model_dump(exclude={"password"}))
+        user.set_password(user_register_dto.password)
 
         db.session.add(user)
         db.session.commit()
@@ -26,10 +23,12 @@ class AuthService:
         return user
 
     @staticmethod
-    def login_user(email, password):
-        user = User.query.filter_by(email=email).first()
-        if not user or not user.check_password(password):
+    def login_user(user_login_dto:UserLoginDTO):
+        user = User.query.filter_by(email=user_login_dto.email).first()
+        if not user or not user.check_password(user_login_dto.password):
             raise InvalidCredentialsError("Invalid credentials")
+
         jwt_expires_delta = current_app.config["JWT_EXPIRATION_TIME"]
-        access_token = create_access_token(identity=user.id, fresh=True, expires_delta=jwt_expires_delta)
+        access_token = create_access_token(identity=str(user.id), fresh=True, expires_delta=jwt_expires_delta)
+
         return access_token, user
