@@ -11,3 +11,10 @@ class Product(db.Model):
     serial_number = db.Column(db.String(100), unique=True, nullable=False)
     stock_quantity = db.Column(db.Integer, nullable=False, default=0)
 
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "product_name": self.product_name,
+            "serial_number": self.serial_number,
+            "stock_quantity": self.stock_quantity
+        }

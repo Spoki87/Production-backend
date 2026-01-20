@@ -12,7 +12,7 @@ class AuthService:
     @staticmethod
     def register_user(user_register_dto:UserRegisterDTO):
         if User.query.filter_by(email=user_register_dto.email).first():
-            raise UserExistsError("User with this email already exists")
+            raise UserExistsError()
 
         user = User(**user_register_dto.model_dump(exclude={"password"}))
         user.set_password(user_register_dto.password)
@@ -26,7 +26,7 @@ class AuthService:
     def login_user(user_login_dto:UserLoginDTO):
         user = User.query.filter_by(email=user_login_dto.email).first()
         if not user or not user.check_password(user_login_dto.password):
-            raise InvalidCredentialsError("Invalid credentials")
+            raise InvalidCredentialsError()
 
         jwt_expires_delta = current_app.config["JWT_EXPIRATION_TIME"]
         access_token = create_access_token(identity=str(user.id), fresh=True, expires_delta=jwt_expires_delta)
