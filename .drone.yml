@@ -5,6 +5,10 @@ name: default
 steps:
   - name: build image
     image: docker:24.0.2
+    privileged: true                 
+    volumes:
+      - host: /var/run/docker.sock
+        container: /var/run/docker.sock
     environment:
       DOCKER_BUILDKIT: 1
     commands:
@@ -12,6 +16,7 @@ steps:
 
   - name: run container
     image: docker:24.0.2
+    privileged: true
     volumes:
       - host: /var/run/docker.sock
         container: /var/run/docker.sock
