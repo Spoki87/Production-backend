@@ -4,8 +4,7 @@ name: default
 
 steps:
   - name: build image
-    image: docker:24.0.2
-    privileged: true                 
+    image: docker:24.0.2           
     volumes:
       - host: /var/run/docker.sock
         container: /var/run/docker.sock
