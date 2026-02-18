@@ -3,7 +3,6 @@ type: docker
 name: default
 
 steps:
-  # 1️⃣ Budowanie obrazu Dockera
   - name: build image
     image: docker:24.0.2
     environment:
@@ -11,12 +10,12 @@ steps:
     commands:
       - docker build -t my-python-app:latest .
 
-  # 2️⃣ Uruchomienie kontenera (nadpisanie starego, jeśli istnieje)
   - name: run container
     image: docker:24.0.2
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - host: /var/run/docker.sock
+        container: /var/run/docker.sock
     commands:
       - docker stop my-python-app || true
       - docker rm my-python-app || true
-      - docker run -d --name my-python-app -p 5000:5000 my-python
+      - docker run -d --name my-python-app -p 5000:5000 my-python-app:latest
