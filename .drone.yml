@@ -4,23 +4,21 @@ name: default
 
 steps:
   - name: build image
-    image: docker:24.0.2-dind
-    environment:
-      DOCKER_HOST: tcp://localhost:2375
-      DOCKER_TLS_CERTDIR: ""
+    image: docker:24.0.2
+    privileged: true
+    volumes:
+      - host: /var/run/docker.sock
+        container: /var/run/docker.sock
     commands:
-      - dockerd-entrypoint.sh &    
-      - sleep 5                     
       - docker build -t my-python-app:latest .
 
   - name: run container
-    image: docker:24.0.2-dind
-    environment:
-      DOCKER_HOST: tcp://localhost:2375
-      DOCKER_TLS_CERTDIR: ""
+    image: docker:24.0.2
+    privileged: true
+    volumes:
+      - host: /var/run/docker.sock
+        container: /var/run/docker.sock
     commands:
-      - dockerd-entrypoint.sh &
-      - sleep 5
       - docker stop my-python-app || true
       - docker rm my-python-app || true
       - docker run -d --name my-python-app -p 5000:5000 my-python-app:latest
