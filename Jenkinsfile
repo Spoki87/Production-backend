@@ -1,6 +1,23 @@
 pipeline {
     agent any
 
+        options {
+        skipDefaultCheckout(true)
+    }
+
+    stages {
+        stage('Clean workspace') {
+            steps {
+                deleteDir()
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
     environment {
         IMAGE_NAME = "production-backend"
         CONTAINER_NAME = "production-backend"
