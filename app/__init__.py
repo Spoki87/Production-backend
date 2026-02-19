@@ -15,7 +15,7 @@ def create_app():
 
     with app.app_context():
         db.create_all()
-
+#d
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(products_bp, url_prefix="/api")
 
